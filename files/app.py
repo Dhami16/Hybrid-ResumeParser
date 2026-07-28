@@ -480,11 +480,15 @@ with tab_parser:
             st.json(result)
 
         with st.expander("📄 Extracted Text (sanity-check PDF parse)"):
+            st.caption(f"Total length: {len(text)} chars")
             st.text_area(
                 "",
                 value=text[:4000] + ("…[truncated]" if len(text) > 4000 else ""),
                 height=260,
             )
+            if len(text) > 4000:
+                st.caption("Last 500 chars (hyperlink URIs are appended here):")
+                st.text_area("", value=text[-500:], height=150, key="tail_debug")
 
     else:
         st.markdown("""
