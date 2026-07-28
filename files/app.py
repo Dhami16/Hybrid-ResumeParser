@@ -16,12 +16,15 @@ New in Week 8 vs Week 7:
 
 import json
 import os
+import pathlib
 import time
 import streamlit as st
 import pandas as pd
 
 from parser_engine import IndustrialParser, extract_text_from_bytes
 from job_matcher import parse_job_description, score_match
+
+APP_DIR = pathlib.Path(__file__).parent
 
 # ─────────────────────────────────────────────────────────────────────────────
 # PAGE CONFIG
@@ -287,11 +290,16 @@ def build_flat_table(result: dict) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def load_parser(gemini_key: str) -> IndustrialParser:
-    # ./model-best (full lg-vectors model, ~445MB) is gitignored -- too large
-    # for GitHub and not present on a deployed instance. ./model-best-lite
+    # model-best (full lg-vectors model, ~445MB) is gitignored -- too large
+    # for GitHub and not present on a deployed instance. model-best-lite
     # (md-vectors, 74MB) is committed specifically so the deployed app still
-    # has real NER instead of silently degrading to Heuristic-only.
-    model_path = "./model-best" if os.path.isdir("./model-best") else "./model-best-lite"
+    # has real NER instead of silently degrading to Heuristic-only. Paths are
+    # resolved relative to this file (not the process cwd), since Streamlit
+    # Community Cloud doesn't necessarily run with cwd set to files/ the way
+    # local `streamlit run app.py` (launched from inside files/) does.
+    full_model = APP_DIR / "model-best"
+    lite_model = APP_DIR / "model-best-lite"
+    model_path = str(full_model if full_model.is_dir() else lite_model)
     return IndustrialParser(model_path=model_path, gemini_api_key=gemini_key or None)
 
 # ─────────────────────────────────────────────────────────────────────────────
