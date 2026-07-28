@@ -85,6 +85,7 @@ SKILL_MAP: dict[str, list[str]] = {
     "Photoshop":        ["photoshop", "adobe photoshop"],
     "Illustrator":      ["illustrator", "adobe illustrator"],
     "Adobe XD":         ["adobe xd"],
+    "InDesign":         ["indesign", "adobe indesign"],
 }
 
 SKILL_CATEGORIES: dict[str, list[str]] = {
@@ -102,7 +103,7 @@ SKILL_CATEGORIES: dict[str, list[str]] = {
         "Tailwind", "Redux",
     ],
     "Design & Product": [
-        "Figma", "Sketch", "Adobe XD", "Photoshop", "Illustrator",
+        "Figma", "Sketch", "Adobe XD", "Photoshop", "Illustrator", "InDesign",
     ],
     "Cloud & Infrastructure": [
         "AWS", "GCP", "Azure", "Heroku", "Vercel", "Netlify",
