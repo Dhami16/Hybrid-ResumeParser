@@ -15,6 +15,7 @@ New in Week 8 vs Week 7:
 """
 
 import json
+import os
 import time
 import streamlit as st
 import pandas as pd
@@ -286,7 +287,12 @@ def build_flat_table(result: dict) -> pd.DataFrame:
 # ─────────────────────────────────────────────────────────────────────────────
 @st.cache_resource(show_spinner=False)
 def load_parser(gemini_key: str) -> IndustrialParser:
-    return IndustrialParser(model_path="./model-best", gemini_api_key=gemini_key or None)
+    # ./model-best (full lg-vectors model, ~445MB) is gitignored -- too large
+    # for GitHub and not present on a deployed instance. ./model-best-lite
+    # (md-vectors, 74MB) is committed specifically so the deployed app still
+    # has real NER instead of silently degrading to Heuristic-only.
+    model_path = "./model-best" if os.path.isdir("./model-best") else "./model-best-lite"
+    return IndustrialParser(model_path=model_path, gemini_api_key=gemini_key or None)
 
 # ─────────────────────────────────────────────────────────────────────────────
 # SIDEBAR
