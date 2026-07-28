@@ -1,5 +1,7 @@
 # Hybrid AI Resume Parser
 
+**Live demo: [hybrid-resume-parser.streamlit.app](https://hybrid-resume-parser.streamlit.app/)**
+
 A resume parser built around a five-tier confidence hierarchy — a custom-trained
 spaCy NER model backed by an EntityRuler, deterministic regex extraction,
 positional/keyword heuristics, and an LLM (Gemini) fallback for the fields
@@ -40,9 +42,13 @@ pip install -r requirements.txt
 streamlit run app.py
 ```
 
-The trained NER model (`files/model-best`) isn't in this repo (see below) — the
-app degrades gracefully to heuristic + LLM extraction if it's missing, but
-you'll get better NAME/UNIVERSITY accuracy by training your own:
+The full trained NER model (`files/model-best`) isn't in this repo (see below).
+A smaller model, `files/model-best-lite` (74MB, `en_core_web_md` vectors
+instead of `en_core_web_lg`), *is* committed specifically so the [live
+demo](https://hybrid-resume-parser.streamlit.app/) has real NER instead of
+running degraded — `app.py` prefers `model-best` when present locally and
+falls back to `model-best-lite` otherwise. You'll get slightly better
+NAME/UNIVERSITY accuracy training your own full-size model:
 
 ```bash
 python prepare_data.py                    # generates train.spacy / dev.spacy
