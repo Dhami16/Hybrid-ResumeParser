@@ -23,7 +23,7 @@ REQUIRED_PACKAGES = [
     "spacy>=3.7.0",
     "PyMuPDF>=1.24.0",
     "pandas>=2.0.0",
-    "google-generativeai>=0.5.0",
+    "google-genai>=1.0.0",
 ]
 
 SPACY_MODEL   = "en_core_web_sm"
@@ -95,10 +95,10 @@ def main():
 
     # Check Gemini SDK
     try:
-        import google.generativeai  # noqa: F401
-        print("  ✓ google-generativeai importable")
+        from google import genai  # noqa: F401
+        print("  ✓ google-genai importable")
     except ImportError:
-        print("  ⚠  google-generativeai not installed — LLM tier will be disabled")
+        print("  ⚠  google-genai not installed — LLM tier will be disabled")
 
     # Check model
     if os.path.isdir(LOCAL_MODEL):

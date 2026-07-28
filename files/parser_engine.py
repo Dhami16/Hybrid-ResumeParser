@@ -11,7 +11,7 @@ Architecture (confidence hierarchy, highest → lowest):
                            (cost-efficient: API is the last resort, not the first)
 
 Week 8 upgrades over Week 7:
-  - LLM fallback layer via google-generativeai (Gemini 1.5 Flash)
+  - LLM fallback layer via google-genai (Gemini 2.5 Flash-Lite)
   - Expanded SKILL_CATEGORIES: Cloud, Databases, DevOps, Soft Skills
   - Edge-case hardening: multi-column PDF sort, image-only PDF guard,
     50k-char truncation guard for very large resumes
@@ -54,9 +54,11 @@ def _load_entity_patterns(path) -> list[dict]:
         logger.warning("Failed to load entity patterns from '%s': %s", path, exc)
         return []
 
-# Optional LLM import — degrades gracefully if SDK not installed
+# Optional LLM import — degrades gracefully if SDK not installed.
+# Uses google-genai (the current SDK) rather than the legacy
+# google-generativeai package, whose support ended 2025-11-30.
 try:
-    import google.generativeai as genai
+    from google import genai
     _GEMINI_AVAILABLE = True
 except ImportError:
     _GEMINI_AVAILABLE = False
@@ -266,16 +268,24 @@ def segment_resume(text: str) -> dict[str, str]:
 
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 2. LLM FALLBACK  (Gemini 1.5 Flash — cheapest tier, ~1s latency)
+# 2. LLM FALLBACK  (Gemini 2.5 Flash-Lite — cheapest tier, ~1s latency)
 # ═══════════════════════════════════════════════════════════════════════════════
 
 class GeminiFallback:
     """
-    Wraps Gemini 1.5 Flash.  Only instantiated when an API key is present.
+    Wraps Gemini 2.5 Flash-Lite.  Only instantiated when an API key is present.
     Called at most ONCE per resume, only when NAME or UNIVERSITY is still
     "Not Found" after all local tiers have been exhausted.
     This is the cost-efficiency principle: local is free, LLM costs money.
+
+    Model name is a class constant rather than buried in a method call --
+    Gemini's model lineup turns over reasonably often (gemini-1.5-flash, the
+    model this class originally used, is fully retired as of this writing).
+    Check https://ai.google.dev/gemini-api/docs/models if queries start
+    failing outright.
     """
+
+    _MODEL = "gemini-2.5-flash-lite"
 
     _PROMPT = """You are a resume data extractor. Read the resume text below and respond with
 ONLY a JSON object — no explanation, no markdown fences.
@@ -292,17 +302,17 @@ Respond with valid JSON only. Example: {{"name": "Jane Doe", "university": "IIT 
     def __init__(self, api_key: str):
         if not _GEMINI_AVAILABLE:
             raise RuntimeError(
-                "google-generativeai is not installed. "
-                "Run: pip install google-generativeai"
+                "google-genai is not installed. "
+                "Run: pip install google-genai"
             )
-        genai.configure(api_key=api_key)
-        self._model = genai.GenerativeModel("gemini-1.5-flash")
+        self._client = genai.Client(api_key=api_key)
 
     def query(self, text: str) -> dict:
         """Returns {"name": str|None, "university": str|None}. Never raises."""
         try:
-            response = self._model.generate_content(
-                self._PROMPT.format(text=text[:1500])
+            response = self._client.models.generate_content(
+                model=self._MODEL,
+                contents=self._PROMPT.format(text=text[:1500]),
             )
             raw = response.text.strip()
             # Strip accidental markdown fences the model sometimes adds
