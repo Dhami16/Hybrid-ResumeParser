@@ -91,3 +91,9 @@ eval_pipeline_segmentation.py  full-pipeline eval (exercises parser_engine.py, n
 trace_pipeline.py       shows which tier resolved each field, per sample resume
 test_job_matching.py    sanity-checks the job matcher against sample JDs
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE). Note this covers the code only; the real
+annotated resume data referenced in `DATA_SOURCES.md` is not included in this
+repo and has its own (unspecified) licensing situation, documented there.
