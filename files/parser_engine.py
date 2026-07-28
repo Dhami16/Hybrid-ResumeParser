@@ -652,6 +652,20 @@ def _extract_page_text_column_aware(page) -> str:
     return "".join(b[4] for b in ordered)
 
 
+def _extract_page_hyperlinks(page) -> list[str]:
+    """
+    Returns the URI targets of all hyperlink annotations on a page.
+
+    Plain text extraction only captures a hyperlink's visible anchor text
+    (e.g. "LinkedIn", "GitHub") -- not the URL it points to. Many resume
+    templates link that way instead of spelling out the URL, which silently
+    defeated the GITHUB/LINKEDIN regex tier (it had nothing to match against
+    even though the links were right there). Appending these URIs to the
+    extracted text lets the existing regexes find them with no changes.
+    """
+    return [link["uri"] for link in page.get_links() if link.get("uri")]
+
+
 def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
     """
     Convert raw uploaded bytes → plain text.
@@ -661,6 +675,10 @@ def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
                            _extract_page_text_column_aware) reads genuine
                            columns top-to-bottom, left-to-right without
                            scrambling single-column layouts
+      Hyperlink-only URLs — link-anchor text like "LinkedIn"/"GitHub" has no
+                           visible URL for regex to match; embedded hyperlink
+                           URIs (see _extract_page_hyperlinks) are appended
+                           to the text so they're still found
       Image-only PDFs    — empty text triggers a descriptive ValueError
       Oversized resumes  — hard cap at 50 000 chars to keep NLP pipeline fast
       Legacy TXT files   — UTF-8 with Latin-1 fallback
@@ -668,7 +686,11 @@ def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
     if filename.lower().endswith(".pdf"):
         try:
             doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
-            full_text = "".join(_extract_page_text_column_aware(page) for page in doc).strip()
+            page_texts, hyperlinks = [], []
+            for page in doc:
+                page_texts.append(_extract_page_text_column_aware(page))
+                hyperlinks.extend(_extract_page_hyperlinks(page))
+            full_text = "".join(page_texts).strip()
 
             if not full_text:
                 raise ValueError(
@@ -676,6 +698,9 @@ def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
                     "No machine-readable text was found. "
                     "Please provide a PDF with selectable text, or run OCR first."
                 )
+
+            if hyperlinks:
+                full_text += "\n" + "\n".join(hyperlinks)
 
             return full_text[:50_000]
 

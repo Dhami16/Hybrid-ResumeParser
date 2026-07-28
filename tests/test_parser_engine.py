@@ -188,6 +188,35 @@ def test_extract_text_from_bytes_image_only_pdf_raises():
         extract_text_from_bytes(blank_pdf_bytes, "blank.pdf")
 
 
+def test_hyperlink_only_urls_are_still_extracted():
+    """
+    Regression test: a resume where "LinkedIn"/"GitHub" are the visible
+    hyperlink anchor text (common in resume templates), with the actual URL
+    only present as a PDF link annotation, not as visible text. Plain text
+    extraction alone can't find a URL to match against -- the hyperlink URIs
+    must be pulled in separately and appended to the extracted text.
+    """
+    import fitz
+
+    doc = fitz.open()
+    page = doc.new_page()
+    page.insert_text((50, 50), "Contact: LinkedIn | GitHub")
+    page.insert_link({
+        "kind": fitz.LINK_URI, "from": fitz.Rect(100, 40, 150, 60),
+        "uri": "https://linkedin.com/in/johndoe",
+    })
+    page.insert_link({
+        "kind": fitz.LINK_URI, "from": fitz.Rect(160, 40, 210, 60),
+        "uri": "https://github.com/johndoe",
+    })
+    pdf_bytes = doc.tobytes()
+    doc.close()
+
+    text = extract_text_from_bytes(pdf_bytes, "test.pdf")
+    assert "linkedin.com/in/johndoe" in text
+    assert "github.com/johndoe" in text
+
+
 def test_column_aware_extraction_falls_back_on_single_column():
     """
     A single-column page (all blocks span nearly the full width) must be
