@@ -1,0 +1,42 @@
+# Virtual environment
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Trained model artifacts — large binaries (some files exceed GitHub's 100MB
+# limit outright) and fully reproducible via prepare_data.py /
+# build_combined_dataset.py + `spacy train`. See README.md to regenerate.
+files/model-best/
+output/
+output_v2/
+output_v3/
+output_combined/
+output_real_only/
+
+# Old dev iterations + historical model backups — kept locally for rollback,
+# not needed in the published repo.
+archive/
+
+# Real annotated resume data (contains real people's names/emails/phone
+# numbers from the DataTurks dataset) — see DATA_SOURCES.md. Regenerate via
+# convert_dataturks.py + build_combined_dataset.py if needed.
+external_data/
+train.spacy
+dev.spacy
+real_only_train.spacy
+
+# A sample file that turned out to be a real person's actual resume, not a
+# placeholder example — never publish. results.csv is leftover early-dev
+# output that also contains this same person's extracted PII in plain text.
+resumes/resume.pdf
+results.csv
+
+# Secrets — never commit real API keys
+.streamlit/secrets.toml
+files/.streamlit/secrets.toml
+
+# OS cruft
+.DS_Store
+Thumbs.db

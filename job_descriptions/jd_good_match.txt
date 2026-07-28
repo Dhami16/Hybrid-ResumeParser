@@ -1,0 +1,24 @@
+Backend Software Engineer â Data Platform Team
+
+We're looking for a Backend Software Engineer to join our data platform team.
+You'll be building and maintaining pipelines that process large volumes of
+data daily, and working closely with our infrastructure team to keep things
+running reliably in the cloud.
+
+Requirements:
+- 2+ years of experience with Python
+- Strong SQL skills
+- Experience with AWS (EC2, S3, Lambda or similar)
+- Familiarity with PostgreSQL or similar relational databases
+- Experience with Docker and containerized deployments
+- Comfortable working in an Agile team environment
+- Bonus: experience with Kubernetes, Redis, or CI/CD pipelines
+- Bonus: exposure to machine learning frameworks (scikit-learn, PyTorch)
+
+Responsibilities:
+- Design and maintain ETL pipelines
+- Improve system latency and reliability
+- Mentor junior engineers
+- Collaborate with cross-functional teams on sprint planning
+
+Nice to have: Git, Linux, MongoDB, DynamoDB, GCP experience.

@@ -1,0 +1,22 @@
+Frontend Engineer â Product Team
+
+We're looking for a Frontend Engineer to help build user-facing features
+for our product. You'll work closely with designers and backend engineers
+to ship polished, responsive interfaces.
+
+Requirements:
+- 2+ years of experience with JavaScript and TypeScript
+- Strong experience with React
+- Familiarity with REST APIs and integrating with backend services
+- Experience with Git and modern CI/CD workflows
+- Comfortable working in an Agile environment with regular sprint cycles
+- Bonus: experience with Node.js on the backend
+- Bonus: exposure to cloud platforms (AWS, Firebase, or GCP)
+
+Responsibilities:
+- Build and maintain responsive UI components
+- Collaborate with design on user experience improvements
+- Write clean, testable frontend code
+- Participate in code reviews and sprint planning
+
+Nice to have: Docker, MongoDB, mobile development experience.

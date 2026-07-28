@@ -1,0 +1,20 @@
+# Hybrid AI Resume Parser — Week 8 Final
+# Install: pip install -r requirements.txt
+# Or run:  python setup.py
+
+# Core web app
+streamlit>=1.35.0
+
+# NLP engine
+spacy>=3.7.0
+# Uncomment if your model-best uses a transformer backbone:
+# spacy-transformers>=1.3.0
+
+# PDF extraction
+PyMuPDF>=1.24.0
+
+# Data handling
+pandas>=2.0.0
+
+# LLM fallback (Tier 5) — optional but recommended
+google-generativeai>=0.5.0

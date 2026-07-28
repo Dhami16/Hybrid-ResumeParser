@@ -1,0 +1,49 @@
+Meera Chandrasekaran
+
+Bengaluru, Karnataka | meera.chandra94@gmail.com | +91-987-654-3210
+github.com/meerachandra | linkedin.com/in/meerachandrasekaran
+
+EDUCATION
+Vellore Institute of Technology
+B.Tech in Computer Science, CGPA: 8.7
+Batch of 2022
+
+PROFILE
+Backend-leaning software engineer with 3 years of experience building data pipelines
+and internal tooling. Comfortable across the stack but happiest close to the database.
+
+TECHNICAL SKILLS
+Languages: Python, Java, SQL, TypeScript, Bash
+AI/ML Frameworks: scikit-learn, PyTorch, spaCy, Hugging Face
+Cloud & Infrastructure: AWS, GCP, Firebase, Terraform
+Databases: PostgreSQL, MongoDB, Redis, DynamoDB
+DevOps & Tools: Git, Docker, Kubernetes, Jenkins, CI/CD, Linux
+Soft Skills: Leadership, Communication, Agile, Problem Solving
+
+WORK EXPERIENCE
+Software Engineer - Nimbus Analytics Pvt Ltd
+2022 - Present
+- Built ETL pipelines processing 2M+ records daily using Python and Airflow
+- Migrated legacy monolith to microservices on AWS, reducing latency by 35%
+- Mentored 2 junior engineers and led sprint planning for a 6-person team
+
+Data Engineering Intern - Solstice Labs
+2021 - 2022
+- Automated report generation with Python and PostgreSQL, saving 10 hours/week
+- Built internal dashboard using Streamlit for real-time pipeline monitoring
+
+PROJECTS
+Resume Insight Engine (personal project)
+- NLP pipeline using spaCy NER + regex hybrid extraction for structured resume data
+- Deployed via Docker on GCP Cloud Run
+
+Campus Event Finder
+- Full-stack app (React + Flask + MongoDB) used by 500+ students at VIT
+
+CERTIFICATIONS
+AWS Certified Solutions Architect - Associate
+Google Cloud Professional Data Engineer
+
+CONTACT
+Email: meera.chandra94@gmail.com
+Phone: (987) 654-3210

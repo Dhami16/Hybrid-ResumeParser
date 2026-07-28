@@ -1,0 +1,28 @@
+RAHUL V.
+Email: rahul.v_test@email.com | Phone: +91 98765-43210
+GitHub: github.com/rahul-v-dev | LinkedIn: linkedin.com/in/rahulv
+
+SUMMARY
+Highly motivated Computer Science Engineering student with a focus on AI and Natural Language Processing. Currently building a local resume parser using spaCy.
+
+EDUCATION
+Thapar Institute
+B.Tech in Computer Science (CSE)
+Batch: 2022-2026
+GPA: 8.5
+
+EXPERIENCE
+AI Intern - Tech Solutions
+* Developed text mining tools using Python3 and NLP techniques.
+* Managed containerized environments with Docker and Linux Bash scripting.
+
+PROJECTS
+Resume Parser Project
+* Utilized spaCy and Scikit-learn for Named Entity Recognition.
+* Implemented a hybrid brain model for high-accuracy extraction.
+* Version control managed via Git and GitHub.
+
+SKILLS
+Languages: Python, Java, cpp, SQL, HTML, CSS
+AI/ML Frameworks: ML, spaCy, TensorFlow, NLP, Keras
+Tools: VS Code, Jupyter, Docker, Postman, Linux, Git
