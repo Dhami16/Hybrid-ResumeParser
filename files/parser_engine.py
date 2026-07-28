@@ -602,12 +602,64 @@ class IndustrialParser:
 # 4. FILE UTILITIES  (edge-case hardened)
 # ═══════════════════════════════════════════════════════════════════════════════
 
+def _extract_page_text_column_aware(page) -> str:
+    """
+    Reconstruct a page's text in column-then-row order instead of fitz's
+    default (or sort=True's) reading order, both of which can interleave
+    left/right column content character-by-character on genuinely
+    multi-column layouts (verified on a real resume: "Chicago, IL" and
+    "University of Illinois Chicago" from two different columns got glued
+    into one garbled string). Block-level extraction keeps each block's text
+    intact; only their ORDER changes.
+
+    Column split detection: find the largest horizontal gap between block
+    x0 positions. Only treat it as a real column boundary if it's a
+    meaningful fraction of the page width AND no block's bounding box
+    straddles it -- a single-column resume with centered/indented headers
+    (e.g. a centered name above left-aligned body text) produces x0 gaps
+    too, but its blocks span across any such "gap", which a genuine column
+    split never does. Without this check, single-column resumes -- the
+    common case -- would have their reading order scrambled instead of
+    merely left unchanged.
+    """
+    blocks = [b for b in page.get_text("blocks") if b[4].strip()]
+    if len(blocks) < 2:
+        return "".join(b[4] for b in blocks)
+
+    xs = sorted({round(b[0]) for b in blocks})
+    page_width = page.rect.width
+    best_gap, best_split = 0, None
+    for prev, curr in zip(xs, xs[1:]):
+        gap = curr - prev
+        if gap > best_gap:
+            best_gap, best_split = gap, (prev + curr) / 2
+
+    is_real_column_split = (
+        best_split is not None
+        and best_gap > page_width * 0.12
+        and page_width * 0.15 < best_split < page_width * 0.85
+        and all(b[2] <= best_split or b[0] >= best_split for b in blocks)
+    )
+
+    if is_real_column_split:
+        left = sorted((b for b in blocks if b[0] < best_split), key=lambda b: b[1])
+        right = sorted((b for b in blocks if b[0] >= best_split), key=lambda b: b[1])
+        ordered = left + right
+    else:
+        ordered = sorted(blocks, key=lambda b: (b[1], b[0]))
+
+    return "".join(b[4] for b in ordered)
+
+
 def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
     """
     Convert raw uploaded bytes → plain text.
 
     Edge cases handled:
-      Multi-column PDFs  — fitz sort=True reads columns in correct order
+      Multi-column PDFs  — column-aware block reordering (see
+                           _extract_page_text_column_aware) reads genuine
+                           columns top-to-bottom, left-to-right without
+                           scrambling single-column layouts
       Image-only PDFs    — empty text triggers a descriptive ValueError
       Oversized resumes  — hard cap at 50 000 chars to keep NLP pipeline fast
       Legacy TXT files   — UTF-8 with Latin-1 fallback
@@ -615,10 +667,7 @@ def extract_text_from_bytes(file_bytes: bytes, filename: str) -> str:
     if filename.lower().endswith(".pdf"):
         try:
             doc = fitz.open(stream=io.BytesIO(file_bytes), filetype="pdf")
-            # sort=True: processes text blocks top→bottom, left→right
-            # so two-column layouts parse in reading order instead of
-            # interleaving left and right column sentences.
-            full_text = "".join(page.get_text(sort=True) for page in doc).strip()
+            full_text = "".join(_extract_page_text_column_aware(page) for page in doc).strip()
 
             if not full_text:
                 raise ValueError(
