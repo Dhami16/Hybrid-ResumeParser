@@ -90,7 +90,22 @@ eval_model.py           spaCy-level NER precision/recall/F1 against dev.spacy
 eval_pipeline_segmentation.py  full-pipeline eval (exercises parser_engine.py, not just the raw model)
 trace_pipeline.py       shows which tier resolved each field, per sample resume
 test_job_matching.py    sanity-checks the job matcher against sample JDs
+tests/                  automated pytest suite (see below)
 ```
+
+## Testing
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest tests/ -v
+```
+
+33 tests covering the regex/EntityRuler/NER tiers, section segmentation,
+skill-alias normalization, PDF text extraction (including the column-aware
+multi-column fix), and the job matcher's tier parsing/scoring. Several tests
+are pinned regressions for specific bugs found during development (e.g. an
+all-caps candidate name being misdetected as a section header) — see the
+docstring on each for what it guards against.
 
 ## License
 

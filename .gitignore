@@ -4,6 +4,7 @@
 # Python
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # Trained model artifacts — large binaries (some files exceed GitHub's 100MB
 # limit outright) and fully reproducible via prepare_data.py /
